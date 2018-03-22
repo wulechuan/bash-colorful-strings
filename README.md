@@ -26,13 +26,13 @@ And you can use it either in foreground (text colors) or background, or both.
 -   Shade only the background color:
 
     ```sh
-    `colorful "Hello world" bgndCyan`
+    `colorful "Hello China" bgndRed`
     ```
 
 -   Shade both foreground and background colors:
 
     ```sh
-    `colorful "I'm wulechuan" textBlack bgndWhite`
+    `colorful "I'm wulechuan" textBlack bgndCyan`
     ```
 
 It supports so-called _modern_ colors as well.
