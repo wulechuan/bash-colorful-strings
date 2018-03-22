@@ -165,7 +165,7 @@ echo -e $mySentence
 
 # License
 
-| Key    | Value              |
-| ------ | ------------------ |
-| Author | wulechuan@live.com |
-| Type   | WTFPL              |
+| Key    | Value                         |
+| ------ | ----------------------------- |
+| Author | wulechuan@live.com            |
+| Type   | [WTFPL](http://www.wtfpl.net) |
