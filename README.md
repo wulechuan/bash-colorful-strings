@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="./docs/styles/markdown-styles-for-vscode-built-in-preview.css">
+<link rel="stylesheet" href="./docs/styles/markdown-styles-for-vscode-built-in-preview.min.css">
 
 # Introduction
 
