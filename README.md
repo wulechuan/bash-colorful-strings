@@ -104,6 +104,9 @@ function __git_ps1_or_empty_string () {
 }
 ```
 
+Here is the snapshot of the example above:
+
+![Git Bash Prompt Example](./docs/illustrates/git-bash-prompt-example.png "Git Bash Prompt Example")
 
 
 
