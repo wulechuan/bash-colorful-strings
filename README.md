@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="./docs/styles/markdown-styles-for-vscode-built-in-preview.min.css">
+<link rel="stylesheet" href="./docs/styles/markdown-styles-for-vscode-built-in-preview.css">
 
 # Introduction
 
@@ -138,10 +138,8 @@ echo -en `set-color textCayn`$punc
 echo `clear-color`
 ```
 
-We can also use it for string concatenations.
-
-> Notice the mixed ways of using this tool shown in the example below.
-> Both the `colorful` function and the `set-color`/`clear-color` pair are used.
+We can also use it for string concatenations,
+like this:
 
 ```sh
 mySentence=`set-color textBlue`
@@ -151,6 +149,9 @@ mySentence=$mySentence`clear-color`
 
 echo -e $mySentence
 ```
+
+> Notice the mixed ways of using this tool shown in the example below.
+> Both the `colorful` function and the `set-color`/`clear-color` pair are used.
 
 
 # Supported Color Names
