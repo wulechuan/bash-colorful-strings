@@ -1,54 +1,51 @@
 <link rel="stylesheet" href="./docs/styles/markdown-styles-for-vscode-built-in-preview.css">
 
-# 简体中文指南（Chinese Simplified Version of ReadMe）
+# 简介
 
-[《使用指南》](./ReadMe.zh-CN.md)
+在 `bash` 类环境中对字符串着色易如反掌。
 
-
-# Introduction
-
-Using colors in `bash` strings is now made easier.
+作者：[wulechuan@live.com](mailto:wulechuan@live.com)
 
 
-# Usage
+# 使用方法
 
-## Examples
+## 示例
 
-### Basic
+### 基本用法
 
-It supports classical ANSI colors.
-And you can use it either in foreground (text colors) or background, or both.
+本工具支持所有“古典” ANSI 色彩值。
 
-> For a complete list of supported color names,
-> see below [Supported Color Names](#SupportedColorNames).
+这些【ANSI 色彩】既可单独用于 Bash 类环境中，各色字符串的【前景色】，亦可单独用于其【背景色】，还可同时配置这些字符串的【前景色】、【背景色】。
 
--   Shade only the foreground color:
+> 本工具支持所有 ANSI
+> 色彩，见下文：[本工具所支持的色彩值详表](#本工具所支持的色彩值详表)。
+
+-   仅对字符串【前景】着色。即仅对文字着色，而不影响文字的衬底颜色：
 
     ```sh
-    `colorful "Hello world" textGreen`
+    `colorful "上善若水" textGreen`
     ```
 
--   Shade only the background color:
+-   仅对字符串【背景】着色。即仅对文字的衬底区域着色，而不影响文字本身的颜色：
 
     ```sh
-    `colorful "Hello China" bgndRed`
+    `colorful "你好！中华！" bgndRed`
     ```
 
--   Shade both foreground and background colors:
+-   同时对字符串的【前景】、【背景】着色。即同时对文字及其衬底着色：
 
     ```sh
-    `colorful "I'm wulechuan" textBlack bgndCyan`
+    `colorful "我是吴乐川" textBlack bgndCyan`
     ```
 
-It supports so-called _modern_ colors as well.
-Simply insert the keyword `Bright` before color names will do.
+本工具亦支持【部分】所谓的“现代” 色彩名称。
 
-Like this:
+仅需在色彩名称的中间插入 `Bright` 一词即可。见下例：
 
 ```sh
-`colorful "Let's try some more colors" textBrightBlack bgndBrightGreen`
+`colorful "何不令命令行世界同样五彩缤纷？" textBrightBlack bgndBrightGreen`
 ```
-or
+再看一个复杂点儿的例子。下例展示了利用本工具方便的自定义【命令提示符】的做法：
 
 ```sh
 GIT_PS1_SHOWDIRTYSTATE=true
@@ -109,7 +106,7 @@ function __git_ps1_or_empty_string () {
 }
 ```
 
-Here is the snapshot of the example above:
+上例的最终效果如下图：
 
 ![Git Bash Prompt Example](./docs/illustrates/git-bash-prompt-example.png "Git Bash Prompt Example")
 
@@ -117,22 +114,33 @@ Here is the snapshot of the example above:
 
 
 
-### In case a direct function call doesn't work
+### 万一【本工具作为函数直接调用】的方法失效怎么办？
 
-You can utilize two functions as a pair to achieve the same object,
-the `set-color`, and the `clear-color`.
+前述诸例均以【函数调用】之法运用本工具，即调用名为 `colorful`
+这一函数。不幸的是，我们偶尔会遭遇此法不通之情形。
 
-1. You first use `set-color` to start shading.
-2. Then, you can present your strings, like do some `echo`s
-   or concatenate some strings into a variable.
-3. When you are done, you use `clear-color` to clean color hints.
+此时须改用他法。具体而言，即采用 `set-color` 和 `clear-color` 这【一对】函数配合，以达到目的。大致步骤如下：
 
-For example:
+1.  首先，调用 `set-color`
+    配好色彩环境。自此，所有字符串均会采用这种色彩环境中的颜色。
+
+2.  而后，照常自由使用字符串。
+
+3.  当不再需要继续使用上述色彩环境时，调用 `clear-color`
+    来清除色彩环境配置，令此后的字符串均采用 Bash 类环境的默认色彩配置。
+
+> `set-color` 和 `clear-color` 二者均可在 `echo`
+> 语句中嵌套，亦可用于字符串拼接语句之中。
+
+> 另，Bash 环境的语法规定，在字符串语境中调用函数，须采用【重音符】`` ` ``
+> 将该【函数调用】包括起来。
+
+例1，单一语句中的运用：
 
 ```sh
 echo -e `set-color textMagenta`"I'm $(whoami)"`clear-color`
 ```
-or use it inside multiple `echo`s:
+例2，多次调用 `set-color`：
 
 ```sh
 punc='!'
@@ -143,8 +151,7 @@ echo -en `set-color textCayn`$punc
 echo `clear-color`
 ```
 
-We can also use it for string concatenations,
-like this:
+例3，字符串拼接语境中的运用：
 
 ```sh
 mySentence=`set-color textBlue`
@@ -155,15 +162,15 @@ mySentence=$mySentence`clear-color`
 echo -e $mySentence
 ```
 
-> Notice the mixed ways of using this tool shown in the example above.
-> Both the `colorful` function and the `set-color`/`clear-color` pair are used.
+> 注意到，上例中故意混合运用了 【`colorful`
+> 函数】和【`set-color`、`clear-color` 双函数组】。
 
 
-# Supported Color Names
+# 本工具所支持的色彩值详表
 
-> For ANSI color full table, see: <https://en.wikipedia.org/wiki/ANSI_escape_code>.
+> 另，完整的 ANSI 色彩表参加：<https://en.wikipedia.org/wiki/ANSI_escape_code>.
 
-## Classical Foreground Colors
+## 所谓“古典”的【前景】色
 
 | Color Name  | ANSI Value |
 | ----------- | ---------- |
@@ -177,7 +184,7 @@ echo -e $mySentence
 | textWhite   | 37         |
 
 
-## Classical Background Colors
+## 所谓“古典”的【背景】色
 
 | Color Name  | ANSI Value |
 | ----------- | ---------- |
@@ -192,7 +199,7 @@ echo -e $mySentence
 
 
 
-## Morden Foreground Colors
+## 所谓“现代”的【前景】色
 
 | Color Name        | ANSI Value |
 | ----------------- | ---------- |
@@ -206,7 +213,7 @@ echo -e $mySentence
 | textBrightWhite   | 97         |
 
 
-## Morden Background Colors
+## 所谓“现代”的【背景】色
 
 | Color Name        | ANSI Value |
 | ----------------- | ---------- |
