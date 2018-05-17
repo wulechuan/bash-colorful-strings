@@ -221,7 +221,7 @@ echo -e $mySentence
 | bgndBrightRed     | 101        |
 | bgndBrightGreen   | 102        |
 | bgndBrightYellow  | 103        |
-| bgndBrightBlue    | 1010       |
+| bgndBrightBlue    | 104        |
 | bgndBrightMagenta | 105        |
 | bgndBrightCyan    | 106        |
 | bgndBrightWhite   | 107        |
