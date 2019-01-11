@@ -1,169 +1,232 @@
 <link rel="stylesheet" href="./docs/styles/markdown-styles-for-vscode-built-in-preview.css">
 
-# 简体中文指南（Chinese Simplified Version of ReadMe）
-
-[《使用指南》](./ReadMe.zh-CN.md)
+# Bash Coloring Tool
 
 
-# Introduction
 
-Using colors in `bash` strings is now made easier.
+## 简体中文指南（Chinese Simplified Version of ReadMe）
+
+中文版《使用指南》[在此](./ReadMe.zh-CN.md)。
 
 
-# Usage
+## Introduction
 
-## Examples
+Using colors in bash strings is now made easier.
 
-### Basic
+This little tool supports classical ANSI colors.
+And you can use them either in foreground (text colors) or background, or both.
 
-It supports classical ANSI colors.
-And you can use it either in foreground (text colors) or background, or both.
-
+It supports so-called _modern_ colors as well.
 > For a complete list of supported color names,
 > see below [Supported Color Names](#SupportedColorNames).
 
--   Shade only the foreground color:
 
-    ```sh
-    `colorful "Hello world" textGreen`
-    ```
 
--   Shade only the background color:
 
-    ```sh
-    `colorful "Hello China" bgndRed`
-    ```
 
--   Shade both foreground and background colors:
+## Usage
 
-    ```sh
-    `colorful "I'm wulechuan" textBlack bgndCyan`
-    ```
+### Basic (invoking the `colorful` function)
 
-It supports so-called _modern_ colors as well.
+#### CLI Format
+```sh
+colorful    [[[[{-n|--}]    <raw string>]    <colorName1>]    <colorName2>]
+```
+
+Note that the first argument($1) can be either `-n` or `--`,
+where `-n` means "append a line break at end",
+and `--` is simple a placeholder that means nothing.
+
+If the first argument is neither `-n` nor `--`,
+then it's treated as the raw string to colorize and print.
+In this situation, no line break will be added at end.
+
+
+
+
+
+#### Examples
+
+##### Basic Examples
+
+Shade only the foreground color, and append a line break at end:
+
+```sh
+colorful    -n    "Hello world"      textGreen
+```
+
+
+Shade only the background color:
+
+```sh
+colorful          "Hello China"      bgndRed
+```
+
+
+Shade both foreground and background colors:
+```sh
+colorful    --    "I'm wulechuan"    textBlack    bgndCyan
+```
+
+
+Using so-called _modern_ colors.
 Simply insert the keyword `Bright` before color names will do.
 
-Like this:
-
 ```sh
-`colorful "Let's try some more colors" textBrightBlack bgndBrightGreen`
-```
-or
-
-```sh
-GIT_PS1_SHOWDIRTYSTATE=true
-GIT_PS1_SHOWUNTRACKEDFILES=true
-GIT_PS1_SHOWUPSTREAM="auto"
-GIT_PS1_HIDE_IF_PWD_IGNORED=true
-
-function _customize_prompt_with_git_branch_info_ {
-	local osType=''
-
-	if [ -r 'etc/issue' ]; then
-		osType=`cat /etc/issue`
-		osType=${osType/Kernel*/}
-		osType=`colorful " $osType" textBlack bgndBrightBlack`'\n'
-	fi
-
-	PS1=`clear-color`
-	PS1=$PS1$osType'\n'
-
-	PS1=$PS1`colorful "\u" textBlack       bgndCyan`      # user
-	PS1=$PS1`colorful "@"  textBlack       bgndGreen`     # @
-	PS1=$PS1`colorful "\h" textBlack       bgndYellow`    # host
-	PS1=$PS1`colorful " :" textBrightBlack bgndBrightRed` # :
-	PS1=$PS1`colorful "\w" textBlack       bgndMagenta`   # current working directory
-
-	PS1=$PS1'`__git_ps1_or_empty_string`'
-
-	PS1=$PS1'\n'
-	PS1=$PS1'$ '                                          # last prompt sign: $<space>
-}
-
-function __git_ps1_or_empty_string () {
-	local gitBranchInfo=
-
-	if test -z "$WINELOADERNOEXEC"
-	then
-		GIT_EXEC_PATH="$(git --exec-path 2>/dev/null)"
-		COMPLETION_PATH="${GIT_EXEC_PATH%/libexec/git-core}"
-		COMPLETION_PATH="${COMPLETION_PATH%/lib/git-core}"
-		COMPLETION_PATH="$COMPLETION_PATH/share/git/completion"
-		if test -f "$COMPLETION_PATH/git-prompt.sh"
-		then
-			. "$COMPLETION_PATH/git-completion.bash"
-			. "$COMPLETION_PATH/git-prompt.sh"
-			gitBranchInfo=`__git_ps1 "%s"`     # bash function
-		fi
-	else
-		gitBranchInfo="$(__git_ps1 '%s')"
-	fi
-
-	if [ -z "$gitBranchInfo" ]; then
-		echo -n ''
-		return
-	fi
-
-	echo
-	echo `colorful '[' textBrightBlack``colorful $gitBranchInfo textGreen``colorful ']' textBrightBlack`
-}
+colorful    "Let's try some more colors"    textBrightBlack    bgndBrightGreen
 ```
 
-Here is the snapshot of the example above:
-
-![Git Bash Prompt Example](./docs/illustrates/git-bash-prompt-example.png "Git Bash Prompt Example")
 
 
+##### Complex Example: to build a colorful prompt string
+
+```sh
+function build_rainbow_prompt_in_16_colored_mode {
+	PS1=$clearColor'\n'                                                                    # New line
+
+
+	local dateString=$(date +"%m-%d")
+	local clockString=$(date +"%H:%M:%S")
+	local userName=`getCurrentUserName`
+	local computerName=`hostname`
+	local currentFolder='\w' # or you can use `pwd` here
+
+
+	PS1="$PS1"$(
+		colorful "$dateString "      textBlack    bgndRed
+		colorful "$clockString "     textBlack    bgndBrightRed
+		colorful "$userName"         textBlack    bgndYellow
+		colorful '@'                 textBlack    bgndGreen
+		colorful '\h'                textBlack    bgndCyan
+		colorful ':'                 textBlack    bgndBrightBlue
+		colorful "$currentFolder"    textBlack    bgndMagenta
+	)
+
+	local gitBranchInfo=`__git_ps1` # this is an third party function. see https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+	if [ ! -z "$gitBranchInfo" ]; then
+		PS1="$PS1\n"$(
+			colorful '['                 textBrightBlack
+			colorful "$gitBranchInfo"    textGreen
+			colorful ']'                 textBrightBlack
+		)
+	fi
+
+	PS1="$PS1\n\$ "
+}
+
+export PROMPT_COMMAND='build_rainbow_prompt_in_16_colored_mode';
+```
+
+> Note that to get the git branch infomation, a third party tool is require.
+> The said tool is provided here:
+> https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+
+Here is the snapshot of the colorful prompt string defined in the example above:
+![Git Bash Prompt Example](./docs/illustrates/colorful-prompt-example.png "Git Bash Prompt Example")
 
 
 
-### In case a direct function call doesn't work
 
-You can utilize two functions as a pair to achieve the same object,
-the `set-color`, and the `clear-color`.
+### Utilizing `set-echo-color` and `clear-echo-color` as a pair.
 
-1. You first use `set-color` to start shading.
-2. Then, you can present your strings, like do some `echo`s
+In case a direct function call doesn't work, 
+you can utilize two functions as a pair to achieve the same object,
+the `set-echo-color`, and the `clear-echo-color`.
+
+1. You first use `set-echo-color` to start shading.
+
+2. Then, you can work with your strings, like do some `echo`s
    or concatenate some strings into a variable.
-3. When you are done, you use `clear-color` to clean color hints.
 
-For example:
+3. When you are done, you use `clear-echo-color` to clean colors.
 
+#### CLI Format
 ```sh
-echo -e `set-color textMagenta`"I'm $(whoami)"`clear-color`
+set-echo-color    [[<colorName1>]    <colorName2>]
 ```
-or use it inside multiple `echo`s:
 
 ```sh
+clear-echo-color
+```
+
+
+#### Examples
+
+##### Example 1
+
+A very simple example.
+
+```sh
+set-echo-color    textMagenta
+echo    -e    "I'm $(whoami)"
+clear-echo-color
+```
+
+Result:
+
+![set-echo-color/clear-echo-color example 1](./docs/illustrates/set-echo-color-example-1-en-US.png "set-echo-color/clear-echo-color-example-1")
+
+
+
+##### Example 2
+
+You can use it before or inside multiple `echo` commands:
+
+```sh
+set-echo-color    textRed    bgndBrightWhite
+
+echo    -en    'Hello'
+echo    -en    `set-echo-color textBlue`' world'
+
 punc='!'
-echo -e `set-color textRed bgndBrightWhite`
-echo -en 'Hello'
-echo -en `set-color textBlue`' world'
-echo -en `set-color textCayn`$punc
-echo `clear-color`
+echo    -e     $(set-echo-color textCayn)${punc}
+
+set-echo-color    textCyan    bgndBlack
+echo    -e     "I'm wulechuan."
+
+clear-echo-color
 ```
 
-We can also use it for string concatenations,
+Result:
+
+![set-echo-color/clear-echo-color example 2](./docs/illustrates/set-echo-color-example-2-en-US.png "set-echo-color/clear-echo-color-example-2")
+
+
+
+##### Example 3
+
+You can also invoke `set-echo-color` and `clear-echo-color` during string concatenations,
 like this:
 
 ```sh
-mySentence=`set-color textBlue`
-mySentence=$mySentence'I hope this tool can help everyone'
-mySentence=$mySentence' who works with '`colorful bash textCyan`'/'`colorful zsh textCyan`', etc.'
-mySentence=$mySentence`clear-color`
+mySentence=`set-echo-color textBlue`
+mySentence=${mySentence}'I hope this tool can help everyone'
+mySentence=${mySentence}' who works with '`colorful bash textCyan`'/'`colorful zsh textCyan`', etc.'
+mySentence=${mySentence}`clear-echo-color`
 
-echo -e $mySentence
+echo -e "\n\n$mySentence"
 ```
 
 > Notice the mixed ways of using this tool shown in the example above.
-> Both the `colorful` function and the `set-color`/`clear-color` pair are used.
+> Both the `colorful` function and the `set-echo-color`/`clear-echo-color` pair are used.
+Result:
+
+![set-echo-color/clear-echo-color example 3](./docs/illustrates/set-echo-color-example-3-en-US.png "set-echo-color/clear-echo-color-example-3")
 
 
-# Supported Color Names
+
+
+
+
+
+
+
+
+## Supported Color Names
 
 > For ANSI color full table, see: <https://en.wikipedia.org/wiki/ANSI_escape_code>.
 
-## Classical Foreground Colors
+### Classical Foreground Colors
 
 | Color Name  | ANSI Value |
 | ----------- | ---------- |
@@ -177,7 +240,7 @@ echo -e $mySentence
 | textWhite   | 37         |
 
 
-## Classical Background Colors
+### Classical Background Colors
 
 | Color Name  | ANSI Value |
 | ----------- | ---------- |
@@ -192,7 +255,8 @@ echo -e $mySentence
 
 
 
-## Morden Foreground Colors
+### Morden Foreground Colors
+> modern colors are **not** supported by Microsoft VSCode terminal.
 
 | Color Name        | ANSI Value |
 | ----------------- | ---------- |
@@ -206,7 +270,8 @@ echo -e $mySentence
 | textBrightWhite   | 97         |
 
 
-## Morden Background Colors
+### Morden Background Colors
+> modern colors are **not** supported by Microsoft VSCode terminal.
 
 | Color Name        | ANSI Value |
 | ----------------- | ---------- |
@@ -222,9 +287,9 @@ echo -e $mySentence
 
 
 
-# License
+## License
 
-| Key    | Value                         |
-| ------ | ----------------------------- |
-| Author | wulechuan@live.com            |
-| Type   | [WTFPL](http://www.wtfpl.net) |
+| Item         | Content                                         |
+| ------------ | ----------------------------------------------- |
+| Author       | [wulechuan@live.com](mailto:wulechuan@live.com) |
+| License Type | [WTFPL](http://www.wtfpl.net)                   |
