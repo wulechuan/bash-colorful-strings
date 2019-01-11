@@ -13,7 +13,9 @@
 
 Using colors in bash strings is now made easier.
 
-This little tool supports classical ANSI colors.
+Simply put, this little tool colorize some strings and print them out via the embedded `echo` command.
+
+It supports classical ANSI colors.
 And you can use them either in foreground (text colors) or background, or both.
 
 It supports so-called _modern_ colors as well.
@@ -33,6 +35,8 @@ It supports so-called _modern_ colors as well.
 colorful    [[[[{-n|--}]    <raw string>]    <colorName1>]    <colorName2>]
 ```
 
+Those colorNames are mapped onto ANSI standard color names.
+
 Note that the first argument($1) can be either `-n` or `--`,
 where `-n` means "append a line break at end",
 and `--` is simple a placeholder that means nothing.
@@ -40,6 +44,10 @@ and `--` is simple a placeholder that means nothing.
 If the first argument is neither `-n` nor `--`,
 then it's treated as the raw string to colorize and print.
 In this situation, no line break will be added at end.
+
+So, in words, if `-n` is not provided as the first argument,
+no line break will be added automatically,
+unless you explicitly append the `'\n'` string manually.
 
 
 
