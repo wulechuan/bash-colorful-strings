@@ -1,92 +1,87 @@
 <link rel="stylesheet" href="./docs/styles/markdown-styles-for-vscode-built-in-preview.css">
 
-# Bash Coloring Tool
+# Bash 用色工具
 
 
 
-## 简体中文指南（Chinese Simplified Version of ReadMe）
 
-中文版《使用指南》[在此](./ReadMe.zh-CN.md)。
+## English Version of this ReadMe
 
-
-## Introduction
-
-Using colors in bash strings is now made easier.
-
-Simply put, this little tool colorize some strings and print them out via the embedded `echo` command.
-
-It supports classical ANSI colors.
-And you can use them either in foreground (text colors) or background, or both.
-
-It supports so-called _modern_ colors as well.
-> For a complete list of supported color names,
-> see below [Supported Color Names](#SupportedColorNames).
+It's [here](./docs/ReadMe.en-US.md).
 
 
 
 
 
-## Usage
+## 简介
 
-### Basic (invoking the `colorful` function)
+在 bash 类环境中对字符串着色易如反掌。
 
-#### CLI Format
+简而言之，该工具为 bash 环境中的字符串着色，并通过内含的 `echo` 语句将着色和的字符串打印输出。
+
+本工具支持所有“古典” ANSI 色彩值。
+
+本工具亦支持【部分】所谓的“_现代_” 色彩名称。
+
+
+> 本工具支持所有 ANSI
+> 色彩，见下文：[本工具所支持的色彩值详表](#本工具所支持的色彩值详表)。
+
+
+## 使用方法
+
+### 基本用法（调用 `colorful` 函数）
+
+
+#### 命令行格式
 ```sh
-colorful    [[[[{-n|--}]    <raw string>]    <colorName1>]    <colorName2>]
+colorful    [[[[{-n|--}]    <需上色且打印的字符串>]    <颜色名称甲>]    <颜色名称乙>]
 ```
 
-Those colorNames are mapped onto ANSI standard color names.
+其中，【颜色名称】对应【ANSI 色彩表】中的 16 种颜色。这些颜色即可用仅于字符的【前景色】，亦可仅用于其【背景色】，还可同时为字符分别配置【前景色】、【背景色】。
 
-Note that the first argument($1) can be either `-n` or `--`,
-where `-n` means "append a line break at end",
-and `--` is simple a placeholder that means nothing.
+第 1 个参数（$1）可取值 `-n` 或 `--`。其中，取 `-n` 代表打印字符串时末尾换行；取 `--` 时代表参数 1 无实际作用。
 
-If the first argument is neither `-n` nor `--`,
-then it's treated as the raw string to colorize and print.
-In this situation, no line break will be added at end.
+如果第 1 个参数取值既非 `-n` 也非 `--`，则该参数即为需上色且打印的字符串本身。此种情形下，结尾亦**无**换行符。
 
-So, in words, if `-n` is not provided as the first argument,
-no line break will be added automatically,
-unless you explicitly append the `'\n'` string manually.
+总之，如果第 1 个参数不为 `-n`，则打印结果的末尾不会有换行符。除非人为后缀一个 `\n` 符号。
 
 
 
+#### 示例
 
-
-#### Examples
-
-##### Basic Examples
-
-Shade only the foreground color, and append a line break at end:
+仅对字符串【前景】着色。即仅对文字着色，而不影响文字的衬底颜色。<br/>另，本例中的命令还会在打印“上善若水”之后换行。
 
 ```sh
-colorful    -n    "Hello world"      textGreen
+`colorful    -n    "上善若水"    textGreen`
 ```
 
 
-Shade only the background color:
+仅对字符串【背景】着色。即仅对文字的衬底区域着色，而不影响文字本身的颜色。<br/>另，本例中打印“你好！中华！”后**并不**换行。
 
 ```sh
-colorful          "Hello China"      bgndRed
+`colorful          "你好！中华！"   bgndRed`
 ```
 
 
-Shade both foreground and background colors:
+同时对字符串的【前景】、【背景】着色。即同时对文字及其衬底着色。<br/>另，本例中打印“你好！中华！”后**并不**换行。
+
 ```sh
-colorful    --    "I'm wulechuan"    textBlack    bgndCyan
+`colorful    --    "我是吴乐川"    textBlack    bgndCyan`
 ```
 
 
-Using so-called _modern_ colors.
-Simply insert the keyword `Bright` before color names will do.
+还可采用所谓“现代”色彩。仅需在色彩名称的中间插入 `Bright` 一词即可。<br/>另，本例中打印“你好！中华！”后**并不**换行。
 
 ```sh
-colorful    "Let's try some more colors"    textBrightBlack    bgndBrightGreen
+`colorful     "何不令命令行世界同样五彩缤纷？"     textBrightBlack     bgndBrightGreen`
 ```
 
 
 
-##### Complex Example: to build a colorful prompt string
+
+
+##### 复杂的例子：构建彩色的【命令提示符】
 
 ```sh
 function build_rainbow_prompt_in_16_colored_mode {
@@ -97,7 +92,7 @@ function build_rainbow_prompt_in_16_colored_mode {
 	local clockString=$(date +"%H:%M:%S")
 	local userName=`getCurrentUserName`
 	local computerName=`hostname`
-	local currentFolder='\w' # or you can use `pwd` here
+	local currentFolder='\w' # or we can use `pwd` here
 
 
 	PS1="$PS1"$(
@@ -110,7 +105,7 @@ function build_rainbow_prompt_in_16_colored_mode {
 		colorful "$currentFolder"    textBlack    bgndMagenta
 	)
 
-	local gitBranchInfo=`__git_ps1` # this is an third party function. see https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+	local gitBranchInfo=`__git_ps1` # 此处须借助一个外来工具。见 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 	if [ ! -z "$gitBranchInfo" ]; then
 		PS1="$PS1\n"$(
 			colorful '['                 textBrightBlack
@@ -124,31 +119,41 @@ function build_rainbow_prompt_in_16_colored_mode {
 
 export PROMPT_COMMAND='build_rainbow_prompt_in_16_colored_mode';
 ```
-
-> Note that to get the git branch infomation, a third party tool is require.
-> The said tool is provided here:
+> 注意，获取上图中的 git 分支信息，须借助一个外来工具。见：
 > https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 
-Here is the snapshot of the colorful prompt string defined in the example above:
+
+
+上例中定义的彩色【命令提示符】的最终效果如下图：
 ![Git Bash Prompt Example](./docs/illustrates/colorful-prompt-example.png "Git Bash Prompt Example")
 
 
 
 
-### Utilizing `set-echo-color` and `clear-echo-color` as a pair.
+### 借助 `set-echo-color` 和 `clear-echo-color` 【函数对】的用法
 
-In case a direct function call doesn't work, 
-you can utilize two functions as a pair to achieve the same object,
-the `set-echo-color`, and the `clear-echo-color`.
+前述诸例均以【`colorful` 函数调用】之法运用本工具，即调用 `colorful`
+这一函数直接输出彩色字符串。然而，我们偶尔会遭遇此法不通之情形。
 
-1. You first use `set-echo-color` to start shading.
+此时须改用他法。具体而言，即采用 `set-echo-color` 和 `clear-echo-color` 这【一对】函数配合，以达到目的。大致步骤如下：
 
-2. Then, you can work with your strings, like do some `echo`s
-   or concatenate some strings into a variable.
+1.  首先，调用 `set-echo-color`
+    配好色彩环境。自此，所有字符串均会采用这种色彩环境中的颜色。
 
-3. When you are done, you use `clear-echo-color` to clean colors.
+2.  而后，照常自由使用字符串。
 
-#### CLI Format
+3.  当不再需要继续使用上述色彩环境时，调用 `clear-echo-color`
+    来清除色彩环境配置，令此后的字符串均采用 Bash 类环境的默认色彩配置。
+
+> `set-echo-color` 和 `clear-echo-color` 二者均可在 `echo`
+> 语句中嵌套，亦可用于字符串拼接语句之中。
+
+> 另，Bash 环境的语法规定，在字符串语境中调用函数，须采用【重音符】`` ` ``
+> 将该【函数调用】包括起来。
+
+
+
+#### 命令行格式
 ```sh
 set-echo-color    [[<colorName1>]    <colorName2>]
 ```
@@ -158,71 +163,70 @@ clear-echo-color
 ```
 
 
-#### Examples
 
-##### Example 1
+#### 示例
 
-A very simple example.
+##### 例 1
+
+在单一语句中的运用。
 
 ```sh
-set-echo-color    textMagenta
-echo    -e    "I'm $(whoami)"
-clear-echo-color
+echo -e `set-echo-color textMagenta`"吾乃$(whoami)"`clear-echo-color`
 ```
 
-Result:
+运行结果：
 
-![set-echo-color/clear-echo-color example 1](./docs/illustrates/set-echo-color-example-1-en-US.png "set-echo-color/clear-echo-color-example-1")
+![set-echo-color/clear-echo-color 例 1](./docs/illustrates/set-echo-color-example-1-zh-CN.png "set-echo-color/clear-echo-color-example-1")
 
 
 
-##### Example 2
 
-You can use it before or inside multiple `echo` commands:
+##### 例 2
+
+亦可多次调用 `set-echo-color`。
 
 ```sh
 set-echo-color    textRed    bgndBrightWhite
 
-echo    -en    'Hello'
-echo    -en    `set-echo-color textBlue`' world'
+echo    -en    '大千世界，'
+echo    -en    `set-echo-color textBlue`'我来也'
 
-punc='!'
+punc='！'
 echo    -e     $(set-echo-color textCayn)${punc}
 
 set-echo-color    textCyan    bgndBlack
-echo    -e     "I'm wulechuan."
+echo    -e     "吾乃吴乐川。"
 
 clear-echo-color
 ```
 
-Result:
+运行结果：
 
-![set-echo-color/clear-echo-color example 2](./docs/illustrates/set-echo-color-example-2-en-US.png "set-echo-color/clear-echo-color-example-2")
+![set-echo-color/clear-echo-color 例 2](./docs/illustrates/set-echo-color-example-2-zh-CN.png "set-echo-color/clear-echo-color-example-2")
 
 
 
-##### Example 3
 
-You can also invoke `set-echo-color` and `clear-echo-color` during string concatenations,
-like this:
+##### 例 3
+
+在字符串拼接语境中的运用。
 
 ```sh
 mySentence=`set-echo-color textBlue`
-mySentence=${mySentence}'I hope this tool can help everyone'
-mySentence=${mySentence}' who works with '`colorful bash textCyan`'/'`colorful zsh textCyan`', etc.'
-mySentence=${mySentence}`clear-echo-color`
+mySentence=${mySentence}'我希望这款小工具'
+mySentence=${mySentence}'对诸位使用 '`colorful "“bash”" textCyan`'、'`colorful "“zsh”" textCyan`'之类'
+mySentence=${mySentence}`set-echo-color textRed`'【外壳程序】'
+mySentence=${mySentence}`clear-echo-color`'的朋友会有帮助。'
 
 echo -e "\n\n$mySentence"
 ```
 
-> Notice the mixed ways of using this tool shown in the example above.
-> Both the `colorful` function and the `set-echo-color`/`clear-echo-color` pair are used.
-Result:
+> 注意到，上例中故意混合运用了 【`colorful`
+> 函数】和【`set-echo-color`、`clear-echo-color` 函数对】。
 
-![set-echo-color/clear-echo-color example 3](./docs/illustrates/set-echo-color-example-3-en-US.png "set-echo-color/clear-echo-color-example-3")
+运行结果：
 
-
-
+![set-echo-color/clear-echo-color 例 3](./docs/illustrates/set-echo-color-example-3-zh-CN.png "set-echo-color/clear-echo-color-example-3")
 
 
 
@@ -230,11 +234,16 @@ Result:
 
 
 
-## Supported Color Names
 
-> For ANSI color full table, see: <https://en.wikipedia.org/wiki/ANSI_escape_code>.
 
-### Classical Foreground Colors
+
+
+
+## 本工具所支持的色彩值详表
+
+> 另，完整的 ANSI 色彩表参加：<https://en.wikipedia.org/wiki/ANSI_escape_code>.
+
+### 所谓“古典”的【前景】色
 
 | Color Name  | ANSI Value |
 | ----------- | ---------- |
@@ -248,7 +257,7 @@ Result:
 | textWhite   | 37         |
 
 
-### Classical Background Colors
+### 所谓“古典”的【背景】色
 
 | Color Name  | ANSI Value |
 | ----------- | ---------- |
@@ -263,8 +272,8 @@ Result:
 
 
 
-### Morden Foreground Colors
-> modern colors are **not** supported by Microsoft VSCode terminal.
+### 所谓“现代”的【前景】色
+> 微软公司的 VS Code 中的【终端】环境对所谓“现代”色表支持得不好。
 
 | Color Name        | ANSI Value |
 | ----------------- | ---------- |
@@ -278,8 +287,8 @@ Result:
 | textBrightWhite   | 97         |
 
 
-### Morden Background Colors
-> modern colors are **not** supported by Microsoft VSCode terminal.
+### 所谓“现代”的【背景】色
+> 微软公司的 VS Code 中的【终端】环境对所谓“现代”色表支持得不好。
 
 | Color Name        | ANSI Value |
 | ----------------- | ---------- |
@@ -295,9 +304,9 @@ Result:
 
 
 
-## License
+## 许可证
 
-| Item         | Content                                         |
-| ------------ | ----------------------------------------------- |
-| Author       | [wulechuan@live.com](mailto:wulechuan@live.com) |
-| License Type | [WTFPL](http://www.wtfpl.net)                   |
+| 类目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| 作者       | [wulechuan@live.com](mailto:wulechuan@live.com) |
+| 许可证类型 | [WTFPL](http://www.wtfpl.net)                   |

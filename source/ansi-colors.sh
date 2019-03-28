@@ -32,7 +32,7 @@ function colorful {
 
 
     local colorEscapeString
-    get-echo-color    $*    colorEscapeString
+    evaluate-echo-color-into-variable    $*    colorEscapeString
 
 
 
@@ -48,16 +48,16 @@ function colorful {
     echo -en "${colorEscapeString}${rawString}${clearColorMark}${endChar}"
 }
 
-function get-echo-color {
+function evaluate-echo-color-into-variable {
     # Usage:
-    #     get-echo-color    <color1>    [<color2>]    <reference of variable to store result>
+    #     evaluate-echo-color-into-variable    <color1>    [<color2>]    <reference of variable to store result>
     #
     # Example:
     # ---------------------------------------------
     #     color1=textRed
     #     color2=bgndWhite
     #     colorEscapeString
-    #     get-echo-color    $color1    $color2   colorEscapeString
+    #     evaluate-echo-color-into-variable    $color1    $color2   colorEscapeString
     #     echo    $colorEscapeString
     # ---------------------------------------------
     # Notice that the last argument has **no** $ sign prefixed.
@@ -98,7 +98,7 @@ function set-echo-color {
     #     set-echo-color    textRed    bgndBrightWhite
 
     local colorEscapeString
-    get-echo-color $* colorEscapeString
+    evaluate-echo-color-into-variable $* colorEscapeString
     echo -e "$colorEscapeString"
 }
 
@@ -158,10 +158,10 @@ function append-colorful-string-to {
 
     if [ $# -gt 3 ]; then
         local colorEscapeString
-        get-echo-color   $4   $5   colorEscapeString
+        evaluate-echo-color-into-variable   $4   $5   colorEscapeString
 
         if [ ! -z "$colorEscapeString" ]; then
-            colorfulStringToAppend="${colorEscapeString}$3\e[0m"
+            colorfulStringToAppend="${colorEscapeString}$3${clearColor}"
         fi
     fi
 
