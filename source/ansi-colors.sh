@@ -99,7 +99,7 @@ function set-echo-color {
 
     local colorEscapeString
     evaluate-echo-color-into-variable $* colorEscapeString
-    echo -e "$colorEscapeString"
+    echo -en "$colorEscapeString"
 }
 
 function clear-echo-color {
